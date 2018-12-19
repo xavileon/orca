@@ -19,6 +19,7 @@ package com.netflix.spinnaker.orca.pipelinetemplate.loader;
 import com.netflix.spinnaker.orca.pipelinetemplate.exceptions.TemplateLoaderException;
 import com.netflix.spinnaker.orca.pipelinetemplate.v1schema.model.PipelineTemplate;
 import com.netflix.spinnaker.orca.pipelinetemplate.v1schema.model.TemplateConfiguration;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
 
 import static java.lang.String.format;
 
@@ -40,6 +42,8 @@ public class TemplateLoader {
   public TemplateLoader(Collection<TemplateSchemeLoader> schemeLoaders) {
     this.schemeLoaders = schemeLoaders;
   }
+
+  private final static Logger log = LoggerFactory.getLogger(TemplateLoader.class);
 
   /**
    * @return a LIFO list of pipeline templates
@@ -72,11 +76,16 @@ public class TemplateLoader {
   }
 
   private PipelineTemplate load(String source) {
+    log.debug("Loading pipeline template source: {}", source);
     URI uri;
     try {
       uri = new URI(source);
     } catch (URISyntaxException e) {
       throw new TemplateLoaderException(format("Invalid URI '%s'", source), e);
+    }
+
+    if (uri.getScheme() == null) {
+      throw new TemplateLoaderException((format("Invalid URI, no scheme provided '%s'", source)));
     }
 
     TemplateSchemeLoader schemeLoader = schemeLoaders.stream()

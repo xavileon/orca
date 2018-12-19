@@ -31,12 +31,16 @@ import com.netflix.spinnaker.orca.pipelinetemplate.v1schema.model.TemplateConfig
 import com.netflix.spinnaker.orca.pipelinetemplate.v1schema.render.DefaultRenderContext;
 import com.netflix.spinnaker.orca.pipelinetemplate.v1schema.render.Renderer;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import static com.netflix.spinnaker.orca.pipeline.model.Execution.ExecutionType.PIPELINE;
+import org.slf4j.Logger;
 
 @Component
 public class PipelineTemplateService {
+
+  private final static Logger log = LoggerFactory.getLogger(TemplateLoader.class);
 
   private final TemplateLoader templateLoader;
 
@@ -54,10 +58,12 @@ public class PipelineTemplateService {
   }
 
   public PipelineTemplate resolveTemplate(TemplateSource templateSource, @Nullable String executionId, @Nullable String pipelineConfigId) {
+    log.debug("Resolving template from source: {}", templateSource.getSource());
     if (containsJinja(templateSource.getSource()) && !(executionId == null && pipelineConfigId == null)) {
       try {
         Execution pipeline = retrievePipelineOrNewestExecution(executionId, pipelineConfigId);
         String renderedSource = render(templateSource.getSource(), pipeline);
+        log.debug("Rendering template source: {}", templateSource.getSource());
         if (StringUtils.isNotBlank(renderedSource)) {
           templateSource.setSource(renderedSource);
         }
