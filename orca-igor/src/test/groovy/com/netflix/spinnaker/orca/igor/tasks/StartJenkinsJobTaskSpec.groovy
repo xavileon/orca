@@ -46,7 +46,7 @@ class StartJenkinsJobTaskSpec extends Specification {
 
         and:
         task.buildService = Stub(BuildService) {
-           build(stage.context.master, stage.context.job, stage.context.parameters) >> [result: 'SUCCESS', running: true, number: 4]
+           build(stage.context.master, stage.context.job, stage.context.parameters, null) >> [result: 'SUCCESS', running: true, number: 4]
         }
 
         when:
@@ -62,7 +62,7 @@ class StartJenkinsJobTaskSpec extends Specification {
 
       and:
       task.buildService = Stub(BuildService) {
-          build(stage.context.master, stage.context.job, stage.context.parameters) >> [ result : 'SUCCESS', running: true, number: 4 ]
+          build(stage.context.master, stage.context.job, stage.context.parameters, null) >> [ result : 'SUCCESS', running: true, number: 4 ]
       }
 
       when:
@@ -78,7 +78,7 @@ class StartJenkinsJobTaskSpec extends Specification {
 
         and:
         task.buildService = Stub(BuildService) {
-            build(stage.context.master, stage.context.job, stage.context.parameters) >> {throw RetrofitError.unexpectedError("http://test", new RuntimeException())}
+            build(stage.context.master, stage.context.job, stage.context.parameters, null) >> {throw RetrofitError.unexpectedError("http://test", new RuntimeException())}
         }
 
         when:

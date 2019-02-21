@@ -80,7 +80,7 @@ class StartScriptTask implements Task {
       parameters.REPO_BRANCH = repoBranch
     }
 
-    String queuedBuild = buildService.build(master, job, parameters)
+    String queuedBuild = buildService.build(master, job, parameters, stage.execution.authentication?.user)
     new TaskResult(ExecutionStatus.SUCCEEDED, [master: master, job: job, queuedBuild: queuedBuild])
   }
 

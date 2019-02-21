@@ -44,7 +44,7 @@ class MonitorQueuedJenkinsJobTask implements OverridableTimeoutRetryableTask {
     String queuedBuild = stage.context.queuedBuild
 
     try {
-      Map<String, Object> build = buildService.queuedBuild(master, queuedBuild)
+      Map<String, Object> build = buildService.queuedBuild(master, queuedBuild, stage.execution.authentication?.user)
       if (build?.number == null) {
         return new TaskResult(ExecutionStatus.RUNNING)
       } else {

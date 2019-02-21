@@ -38,7 +38,7 @@ class StartJenkinsJobTask implements Task {
   TaskResult execute(Stage stage) {
     String master = stage.context.master
     String job = stage.context.job
-    String queuedBuild = buildService.build(master, job, stage.context.parameters)
+    String queuedBuild = buildService.build(master, job, stage.context.parameters, stage.execution.authentication?.user)
     new TaskResult(ExecutionStatus.SUCCEEDED, [queuedBuild: queuedBuild] )
   }
 }

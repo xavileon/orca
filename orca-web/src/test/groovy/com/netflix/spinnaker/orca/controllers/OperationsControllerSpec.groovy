@@ -126,7 +126,7 @@ class OperationsControllerSpec extends Specification {
       startedPipeline.id = UUID.randomUUID().toString()
       startedPipeline
     }
-    buildService.getBuild(buildNumber, master, job) >> buildInfo
+    buildService.getBuild(buildNumber, master, job, "[anonymous]") >> buildInfo
 
     when:
     controller.orchestrate(requestedPipeline, Mock(HttpServletResponse))
@@ -260,7 +260,7 @@ class OperationsControllerSpec extends Specification {
       startedPipeline.id = UUID.randomUUID().toString()
       startedPipeline
     }
-    buildService.getBuild(buildNumber, master, job) >> buildInfo
+    buildService.getBuild(buildNumber, master, job, expectedUser) >> buildInfo
 
     if (queryUser) {
       MDC.put(AuthenticatedRequest.SPINNAKER_USER, queryUser)
@@ -309,8 +309,8 @@ class OperationsControllerSpec extends Specification {
       startedPipeline.id = UUID.randomUUID().toString()
       startedPipeline
     }
-    buildService.getBuild(buildNumber, master, job) >> [name: job, number: buildNumber, result: "SUCCESS", url: "http://jenkins"]
-    buildService.getPropertyFile(buildNumber, propertyFile, master, job) >> propertyFileContent
+    buildService.getBuild(buildNumber, master, job, "[anonymous]") >> [name: job, number: buildNumber, result: "SUCCESS", url: "http://jenkins"]
+    buildService.getPropertyFile(buildNumber, propertyFile, master, job, "[anonymous]") >> propertyFileContent
 
     when:
     controller.orchestrate(requestedPipeline, Mock(HttpServletResponse))

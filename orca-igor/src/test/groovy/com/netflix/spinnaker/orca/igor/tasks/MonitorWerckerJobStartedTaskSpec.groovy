@@ -13,8 +13,6 @@ import com.netflix.spinnaker.orca.igor.BuildService
 import com.netflix.spinnaker.orca.pipeline.model.Execution
 import com.netflix.spinnaker.orca.pipeline.model.Stage
 import org.springframework.mock.env.MockEnvironment
-import retrofit.RetrofitError
-import retrofit.client.Response
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
@@ -34,7 +32,7 @@ class MonitorWerckerJobStartedTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.queuedBuild, stage.context.master, stage.context.job) >> [result: result, number: buildNumber]
+      getBuild(stage.context.queuedBuild, stage.context.master, stage.context.job, null) >> [result: result, number: buildNumber]
     }
 
     expect:

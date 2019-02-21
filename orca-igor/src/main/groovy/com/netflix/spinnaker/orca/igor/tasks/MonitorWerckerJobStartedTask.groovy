@@ -37,7 +37,7 @@ class MonitorWerckerJobStartedTask implements OverridableTimeoutRetryableTask {
     Integer buildNumber = Integer.valueOf(stage.context.queuedBuild)
 
     try {
-      Map<String, Object> build = buildService.getBuild(buildNumber, master, job)
+      Map<String, Object> build = buildService.getBuild(buildNumber, master, job, stage.execution.authentication?.user)
       Map outputs = [:]
       if ("not_built".equals(build?.result) || build?.number == null) {
         //The build has not yet started, so the job started monitoring task needs to be re-run

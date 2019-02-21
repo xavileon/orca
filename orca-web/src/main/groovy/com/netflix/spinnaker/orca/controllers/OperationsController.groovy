@@ -266,7 +266,7 @@ class OperationsController {
 
   private void decorateBuildInfo(Map trigger) {
     if (trigger.master && trigger.job && trigger.buildNumber) {
-      def buildInfo = buildService.getBuild(trigger.buildNumber, trigger.master, trigger.job)
+      def buildInfo = buildService.getBuild(trigger.buildNumber, trigger.master, trigger.job, trigger.user)
       if (buildInfo?.artifacts) {
         if (trigger.type == "manual") {
           trigger.artifacts = buildInfo.artifacts
@@ -279,7 +279,8 @@ class OperationsController {
             trigger.buildNumber as Integer,
             trigger.propertyFile as String,
             trigger.master as String,
-            trigger.job as String
+            trigger.job as String,
+            trigger.user as String
           )
         } catch (RetrofitError e) {
           if (e.response?.status == 404) {

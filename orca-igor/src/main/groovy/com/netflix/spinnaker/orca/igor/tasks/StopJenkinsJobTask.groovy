@@ -43,7 +43,7 @@ class StopJenkinsJobTask implements Task {
     String queuedBuild = stage.context.queuedBuild
     Integer buildNumber = stage.context.buildNumber ? (Integer) stage.context.buildNumber : 0
 
-    buildService.stop(master, job, queuedBuild, buildNumber)
+    buildService.stop(master, job, queuedBuild, buildNumber, stage.execution.authentication?.user)
 
     new TaskResult(ExecutionStatus.SUCCEEDED, [:])
   }

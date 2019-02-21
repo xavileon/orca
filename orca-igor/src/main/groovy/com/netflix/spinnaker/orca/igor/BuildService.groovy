@@ -17,10 +17,14 @@
 
 package com.netflix.spinnaker.orca.igor
 
+import com.netflix.spinnaker.security.AuthenticatedRequest
+import com.netflix.spinnaker.security.User
 import groovy.transform.CompileStatic
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriUtils
+
+import java.util.concurrent.Callable
 
 @CompileStatic
 @Component
@@ -33,27 +37,39 @@ class BuildService {
     return UriUtils.encodeFragment(uri.toString(), "UTF-8")
   }
 
-  String build(String master, String jobName, Map<String, String> queryParams) {
-    return igorService.build(master, encode(jobName), queryParams, "")
+  String build(String master, String jobName, Map<String, String> queryParams, String user = null) {
+    return propagateAuth({ igorService.build(master, encode(jobName), queryParams, "") }, user)
   }
 
-  String stop(String master, String jobName, String queuedBuild, Integer buildNumber) {
-    return igorService.stop(master, jobName, queuedBuild, buildNumber, '')
+  String stop(String master, String jobName, String queuedBuild, Integer buildNumber, String user = null) {
+    return propagateAuth({ igorService.stop(master, jobName, queuedBuild, buildNumber, '') }, user)
   }
 
-  Map queuedBuild(String master, String item) {
-    return igorService.queuedBuild(master, item)
+  Map queuedBuild(String master, String item, String user = null) {
+    return propagateAuth({ igorService.queuedBuild(master, item) }, user)
   }
 
-  Map<String, Object> getBuild(Integer buildNumber, String master, String job) {
-    return igorService.getBuild(buildNumber, master, encode(job))
+  Map<String, Object> getBuild(Integer buildNumber, String master, String job, String user = null) {
+    return propagateAuth({ igorService.getBuild(buildNumber, master, encode(job)) }, user)
   }
 
-  Map<String, Object> getPropertyFile(Integer buildNumber, String fileName, String master, String job) {
-    return igorService.getPropertyFile(buildNumber, fileName, master, encode(job))
+  Map<String, Object> getPropertyFile(Integer buildNumber, String fileName, String master, String job, String user = null) {
+    return propagateAuth({ igorService.getPropertyFile(buildNumber, fileName, master, encode(job)) }, user)
   }
 
   List compareCommits(String repoType, String projectKey, String repositorySlug, Map<String, String> requestParams) {
     return igorService.compareCommits(repoType, projectKey, repositorySlug, requestParams)
+  }
+
+  static <T> T propagateAuth(Callable<T> callable, String user) {
+    if (user) {
+      def principal = new User().with {
+        username = user
+        return it
+      }
+      return AuthenticatedRequest.propagate(callable, principal).call()
+    } else {
+      return callable.call()
+    }
   }
 }

@@ -61,7 +61,8 @@ class MonitorJenkinsJobTask implements OverridableTimeoutRetryableTask {
 
     def buildNumber = (int) stage.context.buildNumber
     try {
-      Map<String, Object> build = buildService.getBuild(buildNumber, master, job)
+      def user = stage.execution.authentication?.user
+      Map<String, Object> build = buildService.getBuild(buildNumber, master, job, user)
       Map outputs = [:]
       String result = build.result
       if ((build.building && build.building != 'false') || (build.running && build.running != 'false')) {
@@ -77,7 +78,7 @@ class MonitorJenkinsJobTask implements OverridableTimeoutRetryableTask {
           Map<String, Object> properties = [:]
           try {
             retrySupport.retry({
-              properties = buildService.getPropertyFile(buildNumber, stage.context.propertyFile, master, job)
+              properties = buildService.getPropertyFile(buildNumber, stage.context.propertyFile, master, job, user)
               if (properties.size() == 0 && result == 'SUCCESS') {
                 throw new IllegalStateException("Expected properties file ${stage.context.propertyFile} but it was either missing, empty or contained invalid syntax")
               }

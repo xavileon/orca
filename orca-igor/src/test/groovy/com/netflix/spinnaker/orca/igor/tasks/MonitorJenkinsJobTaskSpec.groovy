@@ -50,7 +50,7 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: jobState]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: jobState]
     }
 
     expect:
@@ -73,7 +73,7 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', running: running]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', running: running]
     }
 
     expect:
@@ -95,7 +95,7 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', building: state]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', building: state]
     }
 
     expect:
@@ -120,7 +120,7 @@ class MonitorJenkinsJobTaskSpec extends Specification {
     }
 
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> { throw exception }
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> { throw exception }
     }
 
     when:
@@ -150,8 +150,8 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', running: false]
-      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job) >> [val1: "one", val2: "two"]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', running: false]
+      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job, null) >> [val1: "one", val2: "two"]
     }
     task.retrySupport = Spy(RetrySupport) {
       _ * sleep(_) >> { /* do nothing */ }
@@ -173,8 +173,8 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', running: false]
-      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job) >>
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', running: false]
+      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job, null) >>
         [val1: "one", val2: [complex: true]]
     }
     task.retrySupport = Spy(RetrySupport) {
@@ -202,8 +202,8 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', running: false]
-      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job) >>
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', running: false]
+      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job, null) >>
         [val1: "one", artifacts: [
           [type: "docker/image",
            reference: "gcr.io/project/my-image@sha256:28f82eba",
@@ -238,8 +238,8 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', running: false]
-      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job) >>> [[], [val1: "one", val2: "two"]]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', running: false]
+      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job, null) >>> [[], [val1: "one", val2: "two"]]
     }
     task.retrySupport = Spy(RetrySupport) {
       _ * sleep(_) >> { /* do nothing */ }
@@ -260,8 +260,8 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'SUCCESS', running: false]
-      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job) >> [:]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'SUCCESS', running: false]
+      getPropertyFile(stage.context.buildNumber, stage.context.propertyFile, stage.context.master, stage.context.job, null) >> [:]
     }
     task.retrySupport = Spy(RetrySupport) {
       _ * sleep(_) >> { /* do nothing */ }
@@ -283,7 +283,7 @@ class MonitorJenkinsJobTaskSpec extends Specification {
 
     and:
     task.buildService = Stub(BuildService) {
-      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job) >> [result: 'UNSTABLE', building: false]
+      getBuild(stage.context.buildNumber, stage.context.master, stage.context.job, null) >> [result: 'UNSTABLE', building: false]
     }
 
     expect:
